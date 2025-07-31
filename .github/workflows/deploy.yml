@@ -13,12 +13,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Login to Render
-        run: |
-          curl -o /usr/local/bin/render https://raw.githubusercontent.com/render-community/render-cli/main/render
-          chmod +x /usr/local/bin/render
-          render login --api-key ${{ secrets.RENDER_API_KEY }}
+      - name: Setup Node.js (required for render CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: Deploy Web Service
+      - name: Install Render CLI
+        run: npm install -g render-cli
+
+      - name: Deploy to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          render deploy web service ${{ vars.RENDER_SERVICE_ID }}
+          render deployments create \
+            --service-id ${{ vars.RENDER_SERVICE_ID }} \
+            --wait
