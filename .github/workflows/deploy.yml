@@ -26,4 +26,4 @@ jobs:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
-          render deployments create --service-id $RENDER_SERVICE_ID --wait --no-templates
+          render deployments create --service-id $RENDER_SERVICE_ID --wait --no-template
