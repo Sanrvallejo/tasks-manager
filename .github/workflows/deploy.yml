@@ -6,24 +6,14 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (required for render CLI)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Render CLI
-        run: npm install -g render-cli
-
       - name: Deploy to Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
-        run: |
-          render deployments create --service-id $RENDER_SERVICE_ID --wait --no-template
+        uses: givemomentum/render-deploy@v1.5.1
+        with:
+          service_id: ${{ secrets.RENDER_SERVICE_ID }}
+          api_key: ${{ secrets.RENDER_API_KEY }}
