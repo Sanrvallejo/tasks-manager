@@ -5,6 +5,7 @@ import com.sanr.task_manager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -49,5 +50,26 @@ public class TaskService {
                     taskRepository.delete(task);
                     return true;
                 }).orElse(false);
+    }
+
+    public Map<String, Long> getTaskStatics() {
+        List<Task> allTasks = taskRepository.findAll();
+
+        long totalTasks = allTasks.stream().count();
+
+        long completedTasks = allTasks.stream()
+                .filter(task -> task.isCompleted())
+                .count();
+
+        long taskWithDescription = allTasks.stream()
+                .filter(task ->
+                    task.getDescription() != null && task.getDescription().isBlank())
+                .count();
+
+        return Map.of(
+                "totalTasks", totalTasks,
+                "completedTasks" ,completedTasks,
+                "tasksWithDescription", taskWithDescription
+        );
     }
 }
