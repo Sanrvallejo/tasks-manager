@@ -6,18 +6,23 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Trigger Render Deploy
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Trigger Render Deploy Hook
+      - name: Setup Node.js (required for render CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Render CLI
+        run: npm install -g render-cli
+
+      - name: Deploy to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          curl -X POST \
-            --fail \
-            -H "Accept: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -d '{"clearCache": "true"}' \
-            "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys"
+          render deployments create --service-id ${{ secrets.RENDER_SERVICE_ID }} --wait
