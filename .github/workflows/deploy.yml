@@ -7,13 +7,17 @@ on:
 
 jobs:
   deploy:
+    name: Trigger Render Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Render
-        uses: givemomentum/render-deploy@v1.5.1
-        with:
-          service_id: ${{ secrets.RENDER_SERVICE_ID }}
-          api_key: ${{ secrets.RENDER_API_KEY }}
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -X POST \
+            --fail \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -d '{"clearCache": "true"}' \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys"
