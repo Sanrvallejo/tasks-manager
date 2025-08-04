@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tasks")
 @Data
@@ -22,4 +24,7 @@ public class Task {
 
     @Column(nullable = false)
     private boolean completed;
+
+    @ElementCollection
+    private List<Long> subtasks;
 }
