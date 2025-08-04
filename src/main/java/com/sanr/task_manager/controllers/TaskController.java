@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -53,5 +54,11 @@ public class TaskController {
         }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Long>> getTaskStatics() {
+        Map<String, Long> taskStatics = taskService.getTaskStatics();
+        return new ResponseEntity<>(taskStatics, HttpStatus.OK);
     }
 }
